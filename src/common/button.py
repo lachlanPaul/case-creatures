@@ -1,3 +1,10 @@
+"""
+    Button clickable using the mouse
+    TODO: Make buttons selectable using the movement keys
+
+    Lachlan Paul, 2024
+"""
+
 import pygame
 
 

@@ -1,6 +1,6 @@
 """Title Screen"""
 
-from src.button import Button
+from src.common.button import Button
 
 
 def title_screen(screen):
