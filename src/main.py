@@ -1,12 +1,15 @@
 """
-    Where the game runs. This is where the game starts and controls player movement, area loading as well as save files.
+    Where the game runs.
+    This is where the game starts and controls player movement, ui, area loading, as well as save files.
 
     Lachlan Paul, 2024
 """
 
 import pygame
 
+import src.common.world.world_object
 from player import Player
+from src.common.world.world_object import WorldObject
 
 
 class Main:
@@ -27,34 +30,50 @@ class Main:
         self.offset_x = 0
         self.offset_y = 0
 
+        # The offset reverts to their old variables if there's a collision
+        # Or technically, is it "if there's *going* to be a collision?"
+        self.old_offset_x = self.offset_x
+        self.old_offset_y = self.offset_y
+
         self.items_to_offset = []
         self.collidable_items = []
 
         self.roct = pygame.Rect(200, 150, 500, 50)
+        self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
 
         self.items_to_offset.append(self.roct)
 
     def update_everything(self):
-        for item in self.items_to_offset:
-            print(type(item))
+        """Updates the position of everything, including the player."""
+        current_win_size = pygame.display.get_surface().get_size()
 
-    def player_not_collided(self):
+        self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
+
         for item in self.items_to_offset:
-            if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
-                print("cock")
+            match type(item):
+                case pygame.rect.Rect:
+                    pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
+                case src.common.world.world_object.WorldObject:
+                    item.draw(self.SCREEN, self.offset_x, self.offset_y)
+
+    def player_has_collided(self):
+        for item in self.items_to_offset:
+            if type(item) is pygame.rect.Rect:
+                if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
+                    return True
+            elif self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                 return True
         return False
 
     def main(self):
         while self.game_running:
-            # The offset reverts to their old variables if there's a collision
-            # Or technically, is it "if there's *going* to be a collision?"
-            old_offset_x = self.offset_x
-            old_offset_y = self.offset_y
+            self.old_offset_x = self.offset_x
+            self.old_offset_y = self.offset_y
 
             self.clock.tick(60)
             self.SCREEN.fill((255, 255, 255))
             keys = pygame.key.get_pressed()
+            # print(round(self.clock.get_fps()))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -73,14 +92,12 @@ class Main:
             # TODO: This will be changed to check for a few things
             #  If the collided object is a trainer's vision, or
             #  If the collided object is a door or area load trigger
-            if self.player_not_collided():
-                self.offset_x = old_offset_x
-                self.offset_y = old_offset_y
+            if self.player_has_collided():
+                self.offset_x = self.old_offset_x
+                self.offset_y = self.old_offset_y
 
-            self.player.draw(self.SCREEN, self.player.x, self.player.y)
+            self.update_everything()
 
-            pygame.draw.rect(self.SCREEN, (255, 0, 0), self.roct.move(self.offset_x, self.offset_y))
-            # update_everything(items_to_offset)
             pygame.display.flip()
 
 

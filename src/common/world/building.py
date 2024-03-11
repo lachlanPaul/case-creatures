@@ -3,7 +3,7 @@
 
     Lachlan Paul, 2024
 """
-from src.common.world_object import WorldObject
+from src.common.world.world_object import WorldObject
 
 
 class Building(WorldObject):

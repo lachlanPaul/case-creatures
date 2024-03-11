@@ -14,8 +14,12 @@ class WorldObject:
         :param offset_list: list to add self to so that it is correctly offset with the rest of the world
         """
         self.name = name
+
+        self.width = width
+        self.height = height
+
         self.sprite = pygame.image.load(sprite_path)
-        self.sprite = pygame.transform.scale(self.sprite, (width, height))
+        self.sprite = pygame.transform.scale(self.sprite, (self.width, self.height))
 
         self.hitbox = self.sprite.get_rect()
 
@@ -23,4 +27,3 @@ class WorldObject:
 
     def draw(self, screen, x, y):
         screen.blit(self.sprite, (x, y))
-        self.hitbox.topleft = (x, y)

@@ -10,7 +10,7 @@ import pygame
 class Player:
     def __init__(self):
         self.name = "John"
-        self.sprite = pygame.image.load("../assets/placeholder.jpg")
+        self.sprite = pygame.image.load("../assets/player.jpg")
         self.sprite = pygame.transform.scale(self.sprite, (130, 130))
 
         # By default, the player is in the centre of the screen
@@ -19,9 +19,17 @@ class Player:
 
         self.hitbox = self.sprite.get_rect()
 
-    def draw(self, screen, x, y):
-        screen.blit(self.sprite, (x, y))
-        self.hitbox.topleft = (x, y)
+    def draw(self, screen, w, h):
+        # Calculate the center of the screen
+        x = w // 2
+        y = h // 2
+
+        # Calculate the top left position of the sprite
+        sprite_x = x - self.sprite.get_width() // 2
+        sprite_y = y - self.sprite.get_height() // 2
+
+        screen.blit(self.sprite, (sprite_x, sprite_y))
+        self.hitbox.topleft = (sprite_x, sprite_y)
 
     def move_x(self, screen, move_by):
         self.x += move_by
