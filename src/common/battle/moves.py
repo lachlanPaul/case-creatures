@@ -9,6 +9,8 @@ from src.common.battle.types import Types
 
 
 class Move:
+    instances = []
+
     def __init__(self,
                  name,
                  description,
@@ -24,7 +26,7 @@ class Move:
             :param description: description shown in move select
             :param move_type: determines if a move has different damage properties based on the opposing creature's type
             :param required_level: level required before a creature can learn move
-            :param base_dam: base damage before it's modified by the creature's level
+            :param base_dam: base damage before it's modified by the creature's stats
             :param chance_of_hit: a percentage chance between 1 - 100 of the move hitting
             :param hits_first: if true, the move will always hit first, as long as the other move doesn't also
         """
@@ -52,6 +54,8 @@ class Move:
         self.chance_of_hit = chance_of_hit
         self.hits_first = hits_first
 
+        self.instances.append(self)  # This is for automating lists of moves to be made
+
 
 quick_hit = Move(
     "Quick Hit",
@@ -62,3 +66,13 @@ quick_hit = Move(
     80,
     True
 )
+
+basic_moves = []
+furniture_moves = []
+
+all_moves = []
+
+for instance in Move.instances:
+    # Automatically updates lists containing all the moves within a certain type
+    eval(f'{str(instance.move_type).split(".")[-1].lower()}_moves.append(instance)')  # optemysashun
+    all_moves.append(instance)

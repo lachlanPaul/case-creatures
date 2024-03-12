@@ -78,6 +78,7 @@ class Main:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    quit()
 
             # Movement
             if keys[pygame.K_w]:
