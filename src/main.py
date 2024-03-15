@@ -9,6 +9,7 @@ import pygame
 
 import src.common.world.world_object
 from player import Player
+from src.common.trainer import Trainer, Directions
 from src.common.world.world_object import WorldObject
 
 
@@ -38,10 +39,11 @@ class Main:
         self.items_to_offset = []
         self.collidable_items = []
 
-        self.roct = pygame.Rect(200, 150, 500, 50)
+        # self.roct = pygame.Rect(200, 150, 500, 50)
         self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
+        self.troin = Trainer("d", "guy", "cock", 5, 100, 100,  Directions.DOWN, "../assets/placeholder.jpg",  self.items_to_offset)
 
-        self.items_to_offset.append(self.roct)
+        # self.items_to_offset.append(self.roct)
 
     def update_everything(self):
         """Updates the position of everything, including the player."""
@@ -53,6 +55,8 @@ class Main:
             match type(item):
                 case pygame.rect.Rect:
                     pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
+                case src.common.trainer.Trainer:
+                    item.draw(self.SCREEN, self.offset_x, self.offset_y)
                 case src.common.world.world_object.WorldObject:
                     item.draw(self.SCREEN, self.offset_x, self.offset_y)
 
@@ -60,6 +64,10 @@ class Main:
         for item in self.items_to_offset:
             if type(item) is pygame.rect.Rect:
                 if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
+                    return True
+            elif type(item) is Trainer:
+                if self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
+                    print("Saw you!")
                     return True
             elif self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                 return True

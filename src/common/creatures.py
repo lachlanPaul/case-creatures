@@ -39,9 +39,9 @@ class Creature:
         """
 
         # TODO: Make string length checks once a size has been decided
+
         self.name = name
         self.description = description
-        self.creature_type = creature_type
         self.learnable_moves = learnable_moves
         self.moves = []
         self.in_pedia = in_pedia
@@ -49,6 +49,11 @@ class Creature:
         self.attack = base_atk
         self.defense = base_def
         self.speed = base_spd
+
+        self.HEALTH_IV = None
+        self.ATK_IV = None
+        self.DEF_IV = None
+        self.SPD_IV = None
 
         # Accumulated EV is used by a creature when levelling up
         # EV is the amount added to the creature's accumulation when they defeat the creature
@@ -61,16 +66,9 @@ class Creature:
         self.max_health = base_health
         self.current_health = self.max_health
 
-        # Random number for variation in stats
-        rand_iv = random.randint(0, 31)
-        self.HEALTH_IV = rand_iv
-        self.ATK_IV = rand_iv
-        self.DEF_IV = rand_iv
-        self.SPD_IV = rand_iv
-
         # Checks for type and sprite validity
         if not isinstance(creature_type, Types):
-            warnings.warn(f"'{name}' has an invalid move type of {creature_type}")
+            raise TypeError(f"{self.name} has an invalid creature type! Must be an object from Types.")
         else:
             self.creature_type = creature_type
 
@@ -88,6 +86,13 @@ class Creature:
         """Randomises all that needs to be randomised in the creature upon encounter"""
         self.randomise_moves()
         self.create_stats()
+
+        # Random number for variation in stats
+        rand_iv = random.randint(0, 31)
+        self.HEALTH_IV = rand_iv
+        self.ATK_IV = rand_iv
+        self.DEF_IV = rand_iv
+        self.SPD_IV = rand_iv
 
     def randomise_moves(self):
         """
