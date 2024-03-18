@@ -13,7 +13,7 @@ class Directions(enum.Enum):
     UP = 0
     LEFT = 1
     RIGHT = 2
-    DOWN = 4
+    DOWN = 3
 
 
 class Vision:
