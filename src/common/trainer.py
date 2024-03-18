@@ -13,12 +13,12 @@ class Directions(enum.Enum):
     UP = 0
     LEFT = 1
     RIGHT = 2
-    DOWN = 3
+    DOWN = 4
 
 
 class Vision:
-    def __init__(self, pos_x, pos_y):
-        self.hitbox = pygame.rect.Rect(pos_x, pos_y, 130, 100)
+    def __init__(self, pos_x, pos_y, width, height):
+        self.hitbox = pygame.rect.Rect(pos_x - 100, pos_y - 100, width, height)
 
     def draw(self, screen, offset_x, offset_y):
         """For testing"""
@@ -39,16 +39,23 @@ class Trainer:
         """
         self.name = name
         self.character_type = character_type
-        self.sprite = pygame.image.load(sprite_path)
-        self.sprite = pygame.transform.scale(self.sprite, (130, 130))
 
         self.x = pos_x
         self.y = pos_y
 
+        self.sprite = pygame.image.load(sprite_path)
+        self.sprite = pygame.transform.scale(self.sprite, (130, 130))
+        self.hitbox = pygame.Rect(self.x - 100, self.y - 100, 130, 130)
+
         match direction_facing:
+            case Directions.UP:
+                self.vision = Vision(self.x, self.y - (self.y + 150), 130, 250)
+            case Directions.LEFT:
+                self.vision = Vision(self.x - (self.x + 150), self.y, 250, 130)
+            case Directions.RIGHT:
+                self.vision = Vision(self.x + 130, self.y, 250, 130)
             case Directions.DOWN:
-                # self.vision_hitbox = pygame.Rect(pos_x, pos_y, 130, 400)
-                self.vision = Vision(self.x, self.y)
+                self.vision = Vision(self.x, self.y - (self.y - 230), 130, 250)
 
         self.team = []
         self.is_defeated = False  # This will be set to True when they are defeated, so they're only fight-able once
@@ -64,6 +71,7 @@ class Trainer:
             self.team = team
 
         offset_list.append(self)
+        offset_list.append(self.hitbox)
         offset_list.append(self.vision)
         print(type(self))
         print(type(self.vision))
