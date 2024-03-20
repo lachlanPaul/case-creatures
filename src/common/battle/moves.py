@@ -67,6 +67,16 @@ quick_hit = Move(
     True
 )
 
+tackle = Move(
+    "Tackle",
+    "The user tackles their opponent",
+    Types.BASIC,
+    1,
+    7,
+    80,
+    False
+)
+
 basic_moves = []
 furniture_moves = []
 

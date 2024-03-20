@@ -136,3 +136,8 @@ class Creature:
 
 """DEBUG AND TEST. NOT INCLUDED IN ENCYCLOPEDIA"""
 debug = Creature("DEBUG", "DEBUG", Types.BASIC, all_moves, 999, 999, 999, 999, 999, 3, in_pedia=False)
+
+"""STARTERS"""
+chair = Creature("Chair", "A basic wooden chair", Types.FURNITURE,
+                 [basic_moves, furniture_moves], 5, 20, 10, 15,
+                 7, 1)

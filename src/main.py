@@ -10,6 +10,7 @@ import pygame
 import src.common.world.world_object
 from player import Player
 from src.common.trainer import Trainer, Directions, Vision
+from src.common.world.bush import Bush
 from src.common.world.world_object import WorldObject
 
 
@@ -63,17 +64,20 @@ class Main:
 
     def player_has_collided(self):
         for item in self.items_to_offset:
-            if type(item) is pygame.rect.Rect:
-                if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
-                    return True
-            elif type(item) is Trainer:
-                if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
-                    return True
-                elif self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
-                    print("Saw you!")
+            match type(item):
+                case pygame.rect.Rect():
+                    if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
+                        return True
+                case Trainer():
+                    if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
+                        return True
+                    elif self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
+                        print("Saw you!")
+                        return False
+                case Bush():
                     return False
-            # elif self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
-            #     return True
+                case _:
+                    continue
         return False
 
     def main(self):
