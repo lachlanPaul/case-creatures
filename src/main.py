@@ -9,8 +9,8 @@ import pygame
 
 import src.common.world.world_object
 from player import Player
-from src.common.trainer import Trainer, Directions, Vision
-from src.common.world.bush import Bush
+from src.common.trainer import Trainer, Directions
+from src.common.world.bush import Bush, chance_for_battle
 from src.common.world.world_object import WorldObject
 
 
@@ -25,6 +25,7 @@ class Main:
         pygame.display.set_caption("Case Creatures")
 
         self.player = Player()
+        self.PLAYER_SPEED = 3
         self.clock = pygame.time.Clock()
 
         self.game_running = True
@@ -37,14 +38,17 @@ class Main:
         self.old_offset_x = self.offset_x
         self.old_offset_y = self.offset_y
 
+        self.movement_key_pressed = False
+        self.in_bush = False
+
         self.items_to_offset = []
         self.collidable_items = []
 
-        # self.roct = pygame.Rect(200, 150, 500, 50)
-        self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
-        self.troin = Trainer("d", "guy", "cock", 5, 100, 100,  Directions.DOWN, "../assets/placeholder.jpg",  self.items_to_offset)
-
-        # self.items_to_offset.append(self.roct)
+        # Test Objects
+        # self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
+        self.troin = Trainer("d", "guy", "cock", 5, 200, 300, Directions.UP, "../assets/placeholder.jpg",
+                             self.items_to_offset)
+        self.bush = Bush(200, 200, 200, 600, self.SCREEN, self.items_to_offset)
 
     def update_everything(self):
         """Updates the position of everything, including the player."""
@@ -54,12 +58,13 @@ class Main:
 
         for item in self.items_to_offset:
             match type(item):
-                # NOTE: Re-enable this for debugging
-                # case pygame.rect.Rect:
-                #     pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
-                case src.common.trainer.Trainer:
-                    item.draw(self.SCREEN, self.offset_x, self.offset_y)
-                case src.common.world.world_object.WorldObject:
+                case pygame.rect.Rect:
+                    # NOTE: Re-enable this for debugging
+                    # pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
+                    pass
+                case _:
+                    # NOTE: Most things should have pretty much the same draw method.
+                    #   However, the match case should make it easy to accommodate for a unique draw method.
                     item.draw(self.SCREEN, self.offset_x, self.offset_y)
 
     def player_has_collided(self):
@@ -68,27 +73,31 @@ class Main:
                 case pygame.rect.Rect():
                     if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
                         return True
-                case Trainer():
+                case src.common.trainer.Trainer:
                     if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                         return True
                     elif self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
                         print("Saw you!")
                         return False
-                case Bush():
-                    return False
+                case src.common.world.bush.Bush:
+                    if self.player.hitbox.colliderect(item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
+                        print("bush")
+                        self.in_bush = True
+                        return False
                 case _:
                     continue
         return False
 
     def main(self):
         while self.game_running:
+            self.movement_key_pressed = False
+            self.in_bush = False
             self.old_offset_x = self.offset_x
             self.old_offset_y = self.offset_y
 
-            self.clock.tick(60)
+            self.clock.tick(60)  # Frame rate
             self.SCREEN.fill((255, 255, 255))
             keys = pygame.key.get_pressed()
-            # print(round(self.clock.get_fps()))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -97,13 +106,17 @@ class Main:
 
             # Movement
             if keys[pygame.K_w]:
-                self.offset_y += 3
+                self.offset_y += self.PLAYER_SPEED
+                self.movement_key_pressed = True
             elif keys[pygame.K_a]:
-                self.offset_x += 3
+                self.offset_x += self.PLAYER_SPEED
+                self.movement_key_pressed = True
             elif keys[pygame.K_d]:
-                self.offset_x -= 3
+                self.offset_x -= self.PLAYER_SPEED
+                self.movement_key_pressed = True
             elif keys[pygame.K_s]:
-                self.offset_y -= 3
+                self.offset_y -= self.PLAYER_SPEED
+                self.movement_key_pressed = True
 
             # TODO: This will be changed to check for a few things
             #  If the collided object is a trainer's vision, or
@@ -111,6 +124,11 @@ class Main:
             if self.player_has_collided():
                 self.offset_x = self.old_offset_x
                 self.offset_y = self.old_offset_y
+
+            # Checks for random battle when in bush
+            if self.movement_key_pressed and self.in_bush:
+                if chance_for_battle(1):
+                    print(True)
 
             self.update_everything()
 

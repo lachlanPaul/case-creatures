@@ -5,6 +5,9 @@
 """
 import random
 
+import pygame
+
+from src.common import colours
 from src.common.world.world_object import WorldObject
 
 
@@ -13,5 +16,12 @@ def chance_for_battle(percent_chance):
 
 
 class Bush(WorldObject):
-    def __init__(self, offset_list):
-        super().__init__(offset_list)
+    def __init__(self, width, height, pos_x, pos_y, screen, offset_list):
+        super().__init__(None, "../assets/bush.png", width, height, pos_x, pos_y, screen, offset_list)
+
+        self.sprite = pygame.transform.scale(self.sprite, (100, 100))
+
+    def draw(self, screen, x, y):
+        for i in range(0, self.width, 100):
+            for j in range(0, self.height, 100):
+                screen.blit(self.sprite, (self.pos_x + x + i, self.pos_y + y + j))
