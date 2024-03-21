@@ -48,7 +48,7 @@ class Main:
         # self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
         self.troin = Trainer("d", "guy", "cock", 5, 200, 300, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
-        self.bush = Bush(200, 200, 200, 600, self.SCREEN, self.items_to_offset)
+        self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
 
     def update_everything(self):
         """Updates the position of everything, including the player."""
@@ -81,7 +81,6 @@ class Main:
                         return False
                 case src.common.world.bush.Bush:
                     if self.player.hitbox.colliderect(item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
-                        print("bush")
                         self.in_bush = True
                         return False
                 case _:
@@ -124,6 +123,10 @@ class Main:
             if self.player_has_collided():
                 self.offset_x = self.old_offset_x
                 self.offset_y = self.old_offset_y
+
+            # TODO: Abnormal walking pattern, experiment.
+            if self.movement_key_pressed and pygame.time.get_ticks() % 6 == 0:
+                self.player.sprite = pygame.transform.flip(self.player.sprite, True, False)
 
             # Checks for random battle when in bush
             if self.movement_key_pressed and self.in_bush:

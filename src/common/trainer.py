@@ -73,9 +73,6 @@ class Trainer:
         offset_list.append(self)
         offset_list.append(self.hitbox)
         offset_list.append(self.vision)
-        print(type(self))
-        print(type(self.vision))
-        print(offset_list)
 
     def draw(self, screen, x, y):
         screen.blit(self.sprite, ((self.pos_x - 100) + x, (self.pos_y - 100) + y))
