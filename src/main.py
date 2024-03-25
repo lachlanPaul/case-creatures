@@ -9,6 +9,7 @@ import pygame
 
 import src.common.world.world_object
 from player import Player
+from src.common.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
 from src.common.world.world_object import WorldObject
@@ -49,6 +50,7 @@ class Main:
         self.troin = Trainer("d", "guy", "cock", 5, 200, 300, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
         self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
+        self.funny = TextBox("gheheflaefsnhfwenfweuofweuogherhguoerhgeruohgerhguerhuigheruig", "mario")
 
     def update_everything(self):
         """Updates the position of everything, including the player."""
@@ -133,9 +135,10 @@ class Main:
                 if chance_for_battle(1):
                     print(True)
 
+            self.funny.interact(self.SCREEN, keys)
             self.update_everything()
 
-            pygame.display.flip()
+            pygame.display.update()
 
 
 if __name__ == '__main__':
