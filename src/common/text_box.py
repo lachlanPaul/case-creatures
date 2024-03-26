@@ -25,7 +25,7 @@ class TextBox:
         self.e_key_released = True
 
         if len(self.name) > 7:
-            raise "A text box name is too long"
+            raise ("A text box name is too long", ValueError)
 
     def interact(self, screen, keys):
         try:
@@ -36,18 +36,17 @@ class TextBox:
             else:
                 self.e_key_released = True
 
-            pygame.draw.rect(screen, colours.BLACK, self.text_box)
-            text_to_show = self.font.render(self.all_text_sections[self.current_section], True, colours.WHITE)
+            pygame.draw.rect(screen, colours.GREY, self.text_box)
+            text_to_show = self.font.render(self.all_text_sections[self.current_section], True, colours.BLACK)
 
             if self.name is not None:
-                name_to_show = self.font.render(self.name, True, colours.WHITE)
-                pygame.draw.rect(screen, colours.BLACK, self.name_box)
+                name_to_show = self.font.render(self.name, True, colours.BLACK)
+                pygame.draw.rect(screen, colours.GREY, self.name_box)
                 screen.blit(name_to_show, (20, 365))
 
             screen.blit(text_to_show, (20, 450))
 
         except IndexError:
-            # TODO: Exit out of the text here
-            #  Probably use states or whatever
-            pass
+            self.current_section = 0
+            return True
 

@@ -4,6 +4,7 @@
 
     Lachlan Paul, 2024
 """
+import enum
 
 import pygame
 
@@ -13,6 +14,12 @@ from src.common.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
 from src.common.world.world_object import WorldObject
+
+
+class States(enum.Enum):
+    IN_WORLD = 0,
+    IN_TEXT = 1,
+    IN_MENU = 2
 
 
 class Main:
@@ -28,8 +35,11 @@ class Main:
         self.player = Player()
         self.PLAYER_SPEED = 3
         self.clock = pygame.time.Clock()
+        self.keys = pygame.key.get_pressed()
 
         self.game_running = True
+        self.current_state = States.IN_WORLD
+        self.current_text_box = None  # This will be set to the most recent text box read for reloading when reading.
 
         self.offset_x = 0
         self.offset_y = 0
@@ -47,10 +57,25 @@ class Main:
 
         # Test Objects
         # self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
-        self.troin = Trainer("d", "guy", "cock", 5, 200, 300, Directions.UP, "../assets/placeholder.jpg",
+        self.troin = Trainer("d", "guy", "cock", 5, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
         self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
         self.funny = TextBox("gheheflaefsnhfwenfweuofweuogherhguoerhgeruohgerhguerhuigheruig", "mario")
+
+    def movement_keys(self):
+        """Manages movement"""
+        if self.keys[pygame.K_w]:
+            self.offset_y += self.PLAYER_SPEED
+            self.movement_key_pressed = True
+        elif self.keys[pygame.K_a]:
+            self.offset_x += self.PLAYER_SPEED
+            self.movement_key_pressed = True
+        elif self.keys[pygame.K_d]:
+            self.offset_x -= self.PLAYER_SPEED
+            self.movement_key_pressed = True
+        elif self.keys[pygame.K_s]:
+            self.offset_y -= self.PLAYER_SPEED
+            self.movement_key_pressed = True
 
     def update_everything(self):
         """Updates the position of everything, including the player."""
@@ -70,6 +95,13 @@ class Main:
                     item.draw(self.SCREEN, self.offset_x, self.offset_y)
 
     def player_has_collided(self):
+        """
+            Returns whether the player should be stopped from moving when they collide with certain objects.
+
+            :return: true: the player has collided, and they are stopped from moving
+            :return: false: the player has not collided, and they aren't stopped from moving.
+                Is sometimes used to trigger things on collision without stopping movement, ie; trainer vision
+        """
         for item in self.items_to_offset:
             match type(item):
                 case pygame.rect.Rect():
@@ -82,7 +114,8 @@ class Main:
                         print("Saw you!")
                         return False
                 case src.common.world.bush.Bush:
-                    if self.player.hitbox.colliderect(item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
+                    if self.player.hitbox.colliderect(
+                            item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
                         self.in_bush = True
                         return False
                 case _:
@@ -95,29 +128,19 @@ class Main:
             self.in_bush = False
             self.old_offset_x = self.offset_x
             self.old_offset_y = self.offset_y
+            self.keys = pygame.key.get_pressed()
 
             self.clock.tick(60)  # Frame rate
             self.SCREEN.fill((255, 255, 255))
-            keys = pygame.key.get_pressed()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
 
-            # Movement
-            if keys[pygame.K_w]:
-                self.offset_y += self.PLAYER_SPEED
-                self.movement_key_pressed = True
-            elif keys[pygame.K_a]:
-                self.offset_x += self.PLAYER_SPEED
-                self.movement_key_pressed = True
-            elif keys[pygame.K_d]:
-                self.offset_x -= self.PLAYER_SPEED
-                self.movement_key_pressed = True
-            elif keys[pygame.K_s]:
-                self.offset_y -= self.PLAYER_SPEED
-                self.movement_key_pressed = True
+            # Input
+            if self.current_state == States.IN_WORLD:
+                self.movement_keys()
 
             # TODO: This will be changed to check for a few things
             #  If the collided object is a trainer's vision, or
@@ -135,8 +158,11 @@ class Main:
                 if chance_for_battle(1):
                     print(True)
 
-            self.funny.interact(self.SCREEN, keys)
             self.update_everything()
+
+            if self.current_state == States.IN_TEXT:
+                if self.current_text_box.interact(self.SCREEN, self.keys):
+                    self.current_state = States.IN_WORLD
 
             pygame.display.update()
 
