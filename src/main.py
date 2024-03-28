@@ -10,16 +10,18 @@ import pygame
 
 import src.common.world.world_object
 from player import Player
-from src.common.text_box import TextBox
+from src.player_info import player_save_data
+from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
-from src.common.world.world_object import WorldObject
 
 
 class States(enum.Enum):
-    IN_WORLD = 0,
-    IN_TEXT = 1,
-    IN_MENU = 2
+    IN_TITLE_SCREEN = 0
+    IN_WORLD = 1
+    IN_TEXT = 2
+    IN_MENU = 3
+    IN_BATTLE = 4
 
 
 class Main:
@@ -36,10 +38,13 @@ class Main:
         self.PLAYER_SPEED = 3
         self.clock = pygame.time.Clock()
         self.keys = pygame.key.get_pressed()
+        self.seconds_counted = 0
 
         self.game_running = True
         self.current_state = States.IN_WORLD
+
         self.current_text_box = None  # This will be set to the most recent text box read for reloading when reading.
+        self.current_menu = None
 
         self.offset_x = 0
         self.offset_y = 0
@@ -165,6 +170,13 @@ class Main:
                     self.current_state = States.IN_WORLD
 
             pygame.display.update()
+
+            if self.current_state is not States.IN_TITLE_SCREEN:
+                self.seconds_counted += 1
+
+                if self.seconds_counted == 60:
+                    self.seconds_counted = 0
+                    player_save_data.add_second_to_playtime()
 
 
 if __name__ == '__main__':

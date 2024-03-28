@@ -3,13 +3,15 @@
 
     Lachlan Paul, 2024
 """
+import os
 
 import pygame
 
 
 class Player:
     def __init__(self):
-        self.sprite = pygame.image.load("../assets/player.jpg")
+        SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.sprite = pygame.image.load(os.path.join(SRC_DIR, "assets", "player.jpg"))
         self.sprite = pygame.transform.scale(self.sprite, (130, 130))
 
         # By default, the player is in the centre of the screen

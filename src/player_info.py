@@ -12,8 +12,11 @@ class PlayerInfo:
         self.team = []
         self.box = []
 
-    # Setters and getters are probably a bit pointless for the name,
-    # but it might look a bit nicer over player_info.PlayerInfo.name.
+        self.seconds_played = 0
+        self.minutes_played = 0
+        self.hours_played = 0
+
+    # Setters and getters are probably a bit pointless for the name, but, uh, um, uhhhhhhhhhhhhhhhh, shut up.
     def set_player_name(self, name: str):
         self.name = name
 
@@ -33,3 +36,17 @@ class PlayerInfo:
     def move_to_box(self, team_index):
         move_this_goober = self.team.pop(team_index)
         self.box.append(move_this_goober)
+
+    def add_second_to_playtime(self):
+        # This is very necessary
+        self.seconds_played += 1
+
+        if self.seconds_played == 60:
+            self.seconds_played = 0
+            self.minutes_played += 1
+        if self.minutes_played == 60:
+            self.minutes_played = 0
+            self.hours_played += 1
+
+
+player_save_data = PlayerInfo()

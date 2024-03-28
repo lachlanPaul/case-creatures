@@ -1,3 +1,4 @@
+import os
 import random
 from math import floor
 
@@ -72,12 +73,18 @@ class Creature:
         else:
             self.creature_type = creature_type
 
+        # This shit is very goofy.
+        # Basically it just leaps back to the root directory,
+        # so that there's no issues when this is called form files in different directories.
+        SRC_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         if sprite is None:
             try:
-                self.sprite = pygame.image.load(f"../../assets/creatures/{name}.jpg")
+                sprite_path = os.path.join(SRC_DIR, "assets", "creatures", f"{name}.jpg")
+                self.sprite = pygame.image.load(sprite_path)
             except FileNotFoundError:
                 warnings.warn(f"{name}'s sprite was not found, setting to missing texture")
-                self.sprite = pygame.image.load("../../assets/missing.jpg")
+                missing_texture_path = os.path.join(SRC_DIR, "assets", "missing.jpg")
+                self.sprite = pygame.image.load(missing_texture_path)
         else:
             self.sprite = pygame.image.load(sprite)
         self.sprite = pygame.transform.scale(self.sprite, (100, 100))
@@ -128,9 +135,6 @@ class Creature:
             0.01 * (2 * self.defense + self.DEF_IV + floor(0.25 * self.accumulated_ev)) * self.level) + 5
 
         self.speed = floor(0.01 * (2 * self.speed + self.SPD_IV + floor(0.25 * self.accumulated_ev)) * self.level) + 5
-
-    def calculate_move_damage(self, move: Move):
-        return 0
 
 
 """
