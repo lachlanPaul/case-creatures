@@ -1,5 +1,5 @@
 """
-    The Player Class
+    Manages the player's presence in the world.
 
     Lachlan Paul, 2024
 """
@@ -9,7 +9,6 @@ import pygame
 
 class Player:
     def __init__(self):
-        self.name = "John"
         self.sprite = pygame.image.load("../assets/player.jpg")
         self.sprite = pygame.transform.scale(self.sprite, (130, 130))
 
@@ -30,9 +29,3 @@ class Player:
 
         screen.blit(self.sprite, (sprite_x, sprite_y))
         self.hitbox.topleft = (sprite_x, sprite_y)
-
-    def move_x(self, screen, move_by):
-        self.x += move_by
-
-    def move_y(self, screen, move_by):
-        self.y += move_by

@@ -4,7 +4,7 @@ from math import floor
 import pygame
 
 from src.common.battle.moves import *
-from src.common.battle.types import Types
+from src.common.battle.move_creature_types import Types
 
 
 class Creature:
@@ -25,7 +25,7 @@ class Creature:
         """
         :param name: name of the creature to be shown in various places
         :param description: description of the creature to be shown in encyclopedia
-        :param creature_type: creature type: see battle/types.py
+        :param creature_type: creature type: see battle/move_creature_types.py
         :param learnable_moves: a list of all the moves that the creature may randomly learn upon leveling up
         :param base_level: base level expected for the creature to appear. will be overwritten so is more of a guideline
         :param base_health: base health expected for their base level
@@ -128,6 +128,9 @@ class Creature:
             0.01 * (2 * self.defense + self.DEF_IV + floor(0.25 * self.accumulated_ev)) * self.level) + 5
 
         self.speed = floor(0.01 * (2 * self.speed + self.SPD_IV + floor(0.25 * self.accumulated_ev)) * self.level) + 5
+
+    def calculate_move_damage(self, move: Move):
+        return 0
 
 
 """

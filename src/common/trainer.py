@@ -26,9 +26,8 @@ class Vision:
 
 
 class Trainer:
-    def __init__(self, name, character_type, possible_creatures, team_size, pos_x, pos_y, direction_facing: Directions,
-                 sprite_path, offset_list,
-                 team=None):
+    def __init__(self, name, character_type, possible_creatures, team_size, pos_x, pos_y,
+                 direction_facing: Directions, sprite_path, offset_list, team=None, wants_to_battle=None):
         """
         :param name: trainer's name
         :param character_type: the prefix of their name, eg; Karate Boy, Office Worker, etc
@@ -36,9 +35,14 @@ class Trainer:
         :param team_size: the max size their team can be if it's randomised. max size 5
         :param sprite_path: full path to the sprite image
         :param team: a predefined team. a random team will be given if this isn't present
+        :param wants_to_battle: if there is one, give them a unique "wants to battle" quote
         """
         self.name = name
         self.character_type = character_type
+        if wants_to_battle is None:
+            self.wants_to_battle = "wants to battle!"
+        else:
+            self.wants_to_battle = wants_to_battle  # "wants to throw hands!"
 
         self.pos_x = pos_x
         self.pos_y = pos_y

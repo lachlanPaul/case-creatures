@@ -5,7 +5,7 @@
 """
 import warnings
 
-from src.common.battle.types import Types
+from src.common.battle.move_creature_types import Types
 
 
 class Move:
