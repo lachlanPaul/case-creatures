@@ -7,6 +7,8 @@
 
 import pygame
 
+from src.common.global_constants import JETBRAINS_MONO
+
 
 class Button:
     def __init__(self, x, y, width, height, text, font: pygame.font.Font = False):
@@ -16,7 +18,7 @@ class Button:
         if font:
             self.font = font
         else:
-            self.font = pygame.font.Font(None, 36)  # Default font
+            self.font = pygame.font.SysFont(JETBRAINS_MONO, 60)  # Default font
 
     def draw(self, screen):
         pygame.draw.rect(screen, (255, 255, 255), self.rect)

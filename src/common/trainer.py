@@ -6,8 +6,6 @@ import random
 
 import pygame
 
-from src.common import colours
-
 
 class Directions(enum.Enum):
     UP = 0

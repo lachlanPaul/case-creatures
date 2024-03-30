@@ -4,8 +4,9 @@ from math import floor
 
 import pygame
 
-from src.common.battle.moves import *
 from src.common.battle.move_creature_types import Types
+from src.common.battle.moves import *
+from src.common.global_constants import ROOT_DIR
 
 
 class Creature:
@@ -76,14 +77,13 @@ class Creature:
         # This shit is very goofy.
         # Basically it just leaps back to the root directory,
         # so that there's no issues when this is called form files in different directories.
-        SRC_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         if sprite is None:
             try:
-                sprite_path = os.path.join(SRC_DIR, "assets", "creatures", f"{name}.jpg")
+                sprite_path = os.path.join(ROOT_DIR, "assets", "creatures", f"{name}.jpg")
                 self.sprite = pygame.image.load(sprite_path)
             except FileNotFoundError:
                 warnings.warn(f"{name}'s sprite was not found, setting to missing texture")
-                missing_texture_path = os.path.join(SRC_DIR, "assets", "missing.jpg")
+                missing_texture_path = os.path.join(ROOT_DIR, "assets", "missing.jpg")
                 self.sprite = pygame.image.load(missing_texture_path)
         else:
             self.sprite = pygame.image.load(sprite)

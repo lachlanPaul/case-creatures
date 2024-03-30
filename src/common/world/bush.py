@@ -7,7 +7,6 @@ import random
 
 import pygame
 
-from src.common import colours
 from src.common.world.world_object import WorldObject
 
 

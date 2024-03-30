@@ -5,15 +5,17 @@
     Lachlan Paul, 2024
 """
 import enum
+from math import floor
 
 import pygame
 
 import src.common.world.world_object
 from player import Player
-from src.player_info import player_save_data
+from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
 from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
+from src.player_info import player_save_data
 
 
 class States(enum.Enum):
@@ -98,6 +100,11 @@ class Main:
                     # NOTE: Most things should have pretty much the same draw method.
                     #   However, the match case should make it easy to accommodate for a unique draw method.
                     item.draw(self.SCREEN, self.offset_x, self.offset_y)
+
+        # TODO: When making configuration files and such, set this to be ran if enabled in settings.
+        fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
+        fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
+        self.SCREEN.blit(fps_text, (0, 0))
 
     def player_has_collided(self):
         """

@@ -5,8 +5,6 @@
 """
 import pygame
 
-from src.common import colours
-
 
 class WorldObject:
     def __init__(self, name, sprite_path, width, height, pos_x, pos_y, screen, offset_list):
