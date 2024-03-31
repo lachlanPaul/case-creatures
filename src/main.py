@@ -12,6 +12,7 @@ import pygame
 import src.common.world.world_object
 from player import Player
 from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
+from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
@@ -149,8 +150,16 @@ class Main:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        if self.current_state is not States.IN_MENU and self.current_menu is not pause_menu:
+                            self.current_state = States.IN_MENU
+                            self.current_menu = pause_menu
+                        else:
+                            self.current_state = States.IN_WORLD
+                            self.current_menu = None
 
-            # Input
+            # Movement
             if self.current_state == States.IN_WORLD:
                 self.movement_keys()
 
@@ -172,18 +181,23 @@ class Main:
 
             self.update_everything()
 
+            # Put anything that needs to be drawn over the top of the world here.
             if self.current_state == States.IN_TEXT:
                 if self.current_text_box.interact(self.SCREEN, self.keys):
                     self.current_state = States.IN_WORLD
 
-            pygame.display.update()
+            if self.current_menu is pause_menu:
+                pause_menu.draw(self.SCREEN)
 
+            # Counts towards the overall playtime counter
             if self.current_state is not States.IN_TITLE_SCREEN:
                 self.seconds_counted += 1
 
                 if self.seconds_counted == 60:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
+
+            pygame.display.update()
 
 
 if __name__ == '__main__':
