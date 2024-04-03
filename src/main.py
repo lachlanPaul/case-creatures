@@ -16,6 +16,7 @@ from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
 from src.common.world.bush import Bush, chance_for_battle
+from src.common.world.world_object import WorldObject
 from src.player_info import player_save_data
 
 
@@ -64,7 +65,8 @@ class Main:
         self.collidable_items = []
 
         # Test Objects
-        # self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 50, 50, self.items_to_offset)
+        self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 100, 100, 100, 500, self.SCREEN,
+                                  self.items_to_offset)
         self.troin = Trainer("d", "guy", "cock", 5, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
         self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
@@ -119,6 +121,9 @@ class Main:
             match type(item):
                 case pygame.rect.Rect():
                     if self.player.hitbox.colliderect(item.move((self.offset_x, self.offset_y))):
+                        return True
+                case src.common.world.world_object.WorldObject:
+                    if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                         return True
                 case src.common.trainer.Trainer:
                     if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):

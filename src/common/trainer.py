@@ -78,4 +78,3 @@ class Trainer:
 
     def draw(self, screen, x, y):
         screen.blit(self.sprite, ((self.pos_x - 100) + x, (self.pos_y - 100) + y))
-        self.vision.draw(screen, x, y)
