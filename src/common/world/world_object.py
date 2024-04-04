@@ -9,16 +9,18 @@ from src.common.global_constants import COLOUR_RED
 
 
 class InteractRadius:
-    def __init__(self, pos_x, pos_y, width, height):
+    def __init__(self, pos_x, pos_y, width, height, interact_method=None):
         # Creates a radius around the object. This will be used for interactions
-        self.interact_radius = pygame.rect.Rect(pos_x, pos_y, width + 10, height + 10)
+        # Please excuse these magic numbers
+        self.interact_radius = pygame.rect.Rect(pos_x - 27, pos_y - 30, width + 55, height + 55)
+        self.interact_method = interact_method
 
     def draw(self, screen, offset_x, offset_y):
         pygame.draw.rect(screen, (255, 0, 0), self.interact_radius.move(offset_x, offset_y), 2)
 
 
 class WorldObject:
-    def __init__(self, name, sprite_path, width, height, pos_x, pos_y, screen, offset_list):
+    def __init__(self, name, sprite_path, width, height, pos_x, pos_y, screen, offset_list, interact_method=None):
         """
         :param name: the name of the object. just in case we need it for future reference
         :param sprite_path: image path
@@ -40,16 +42,14 @@ class WorldObject:
         self.sprite = pygame.image.load(sprite_path)
         self.sprite = pygame.transform.scale(self.sprite, (self.width, self.height))
 
-        self.interact_radius = InteractRadius(self.pos_x, self.pos_y, self.width, self.height)
+        self.interact_radius = InteractRadius(self.pos_x, self.pos_y, self.width, self.height, interact_method)
 
-        self.hitbox = pygame.Rect(self.pos_x, self.pos_y, 130, 130)
+        self.hitbox = pygame.Rect(self.pos_x, self.pos_y, self.width, self.height)
 
         screen.blit(self.sprite, (self.pos_x, self.pos_y))
 
         offset_list.append(self)
-        offset_list.append(self.hitbox)
         offset_list.append(self.interact_radius)
 
     def draw(self, screen, x, y):
         screen.blit(self.sprite, (self.pos_x + x, self.pos_y + y))
-        pygame.draw.rect(screen, COLOUR_RED, self.hitbox.move(x, y))

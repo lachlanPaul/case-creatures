@@ -45,5 +45,3 @@ def type_modifier(victim_type, attack_type):
 
     # Default return value if the types don't have any special interaction
     return NO_EFFECT
-
-

@@ -16,7 +16,7 @@ def chance_for_battle(percent_chance):
 
 class Bush(WorldObject):
     def __init__(self, width, height, pos_x, pos_y, screen, offset_list):
-        super().__init__(None, "../assets/bush.png", width, height, pos_x, pos_y, screen, offset_list)
+        super().__init__(None, "../assets/bush.png", width, height, pos_x, pos_y, screen, offset_list, None)
 
         # Bush doesn't need this, so we get this goober out of here
         offset_list.remove(self.interact_radius)

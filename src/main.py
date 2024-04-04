@@ -5,6 +5,7 @@
     Lachlan Paul, 2024
 """
 import enum
+import types
 from math import floor
 
 import pygame
@@ -49,6 +50,7 @@ class Main:
 
         self.current_text_box = None  # This will be set to the most recent text box read for reloading when reading.
         self.current_menu = None
+        self.current_interact_radius = None
 
         self.offset_x = 0
         self.offset_y = 0
@@ -65,7 +67,7 @@ class Main:
         self.collidable_items = []
 
         # Test Objects
-        self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 100, 100, 100, 500, self.SCREEN,
+        self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 200, 100, 100, 500, self.SCREEN,
                                   self.items_to_offset)
         self.troin = Trainer("d", "guy", "cock", 5, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
@@ -99,6 +101,10 @@ class Main:
                     # NOTE: Re-enable this for debugging
                     # pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
                     pass
+                case src.common.world.world_object.InteractRadius:
+                    # NOTE: For debug
+                    # item.draw(self.SCREEN, self.offset_x, self.offset_y)
+                    pass
                 case _:
                     # NOTE: Most things should have pretty much the same draw method.
                     #   However, the match case should make it easy to accommodate for a unique draw method.
@@ -117,6 +123,8 @@ class Main:
             :return: false: the player has not collided, and they aren't stopped from moving.
                 Is sometimes used to trigger things on collision without stopping movement, ie; trainer vision
         """
+        self.current_interact_radius = None
+
         for item in self.items_to_offset:
             match type(item):
                 case pygame.rect.Rect():
@@ -125,6 +133,10 @@ class Main:
                 case src.common.world.world_object.WorldObject:
                     if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                         return True
+                case src.common.world.world_object.InteractRadius:
+                    if self.player.hitbox.colliderect(item.interact_radius.move(self.offset_x, self.offset_y)):
+                        self.current_interact_radius = item
+                        return False
                 case src.common.trainer.Trainer:
                     if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                         return True
@@ -163,6 +175,11 @@ class Main:
                         else:
                             self.current_state = States.IN_WORLD
                             self.current_menu = None
+                    elif event.key == pygame.K_e:
+                        try:
+                            self.current_interact_radius.interact_method()
+                        except TypeError:
+                            pass
 
             # Movement
             if self.current_state == States.IN_WORLD:
