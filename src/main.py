@@ -67,12 +67,12 @@ class Main:
         self.collidable_items = []
 
         # Test Objects
+        self.funny = TextBox("GAHAHA! You my friend, are on the road to glory!!!!!!!!!!!!!!!!!!", "Zangief")
         self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 200, 100, 100, 500, self.SCREEN,
-                                  self.items_to_offset)
+                                  self.items_to_offset, self.funny, self.keys)
         self.troin = Trainer("d", "guy", "cock", 5, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
         self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
-        self.funny = TextBox("gheheflaefsnhfwenfweuofweuogherhguoerhgeruohgerhguerhuigheruig", "mario")
 
     def movement_keys(self):
         """Manages movement"""
@@ -175,9 +175,12 @@ class Main:
                         else:
                             self.current_state = States.IN_WORLD
                             self.current_menu = None
-                    elif event.key == pygame.K_e:
+                    elif event.key == pygame.K_e and self.current_interact_radius is not None:
                         try:
-                            self.current_interact_radius.interact_method()
+                            if type(self.current_interact_radius.interact_method) == src.common.menu.text_box.TextBox:
+                                self.current_interact_radius.interact_method.interact(self.SCREEN, self.keys)
+                                self.current_text_box = self.current_interact_radius.interact_method
+                                self.current_state = States.IN_TEXT
                         except TypeError:
                             pass
 
