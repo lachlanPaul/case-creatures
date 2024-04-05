@@ -175,12 +175,15 @@ class Main:
                         else:
                             self.current_state = States.IN_WORLD
                             self.current_menu = None
-                    elif event.key == pygame.K_e and self.current_interact_radius is not None:
+                    elif event.key == pygame.K_e and self.current_state is States.IN_WORLD and self.current_interact_radius is not None:
                         try:
                             if type(self.current_interact_radius.interact_method) == src.common.menu.text_box.TextBox:
                                 self.current_interact_radius.interact_method.interact(self.SCREEN, self.keys)
+
                                 self.current_text_box = self.current_interact_radius.interact_method
                                 self.current_state = States.IN_TEXT
+                                print(self.current_text_box.current_section)
+                                self.current_text_box.current_section -= 1
                         except TypeError:
                             pass
 

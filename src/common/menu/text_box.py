@@ -14,7 +14,7 @@ class TextBox:
 
         self.text = text
         self.name = name
-        self.font = pygame.font.Font(JETBRAINS_MONO, 60)
+        self.font = pygame.font.Font(JETBRAINS_MONO, 40)
 
         self.all_text_sections = [self.text[i:i + 30] for i in range(0, len(self.text), 30)]
         self.current_section = 0
