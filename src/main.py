@@ -5,7 +5,6 @@
     Lachlan Paul, 2024
 """
 import enum
-import types
 from math import floor
 
 import pygame
@@ -182,7 +181,6 @@ class Main:
 
                                 self.current_text_box = self.current_interact_radius.interact_method
                                 self.current_state = States.IN_TEXT
-                                print(self.current_text_box.current_section)
                                 self.current_text_box.current_section -= 1
                         except TypeError:
                             pass

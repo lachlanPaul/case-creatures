@@ -12,6 +12,8 @@ class PlayerInfo:
         self.team = []
         self.box = []
 
+        self.money = 0
+
         self.seconds_played = 0
         self.minutes_played = 0
         self.hours_played = 0
