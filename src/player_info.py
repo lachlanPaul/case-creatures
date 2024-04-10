@@ -11,6 +11,7 @@ class PlayerInfo:
         self.name = None
         self.team = []
         self.box = []
+        self.inventory = []
 
         self.money = 0
 

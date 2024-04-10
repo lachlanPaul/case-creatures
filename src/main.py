@@ -176,7 +176,7 @@ class Main:
                             self.current_menu = None
                     elif event.key == pygame.K_e and self.current_state is States.IN_WORLD and self.current_interact_radius is not None:
                         try:
-                            if type(self.current_interact_radius.interact_method) == src.common.menu.text_box.TextBox:
+                            if type(self.current_interact_radius.interact_method) is src.common.menu.text_box.TextBox:
                                 self.current_interact_radius.interact_method.interact(self.SCREEN, self.keys)
 
                                 self.current_text_box = self.current_interact_radius.interact_method

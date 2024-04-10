@@ -1,6 +1,5 @@
 """
-    Button clickable using the mouse
-    TODO: Make buttons selectable using the movement keys
+    Button clickable using the keys
 
     Lachlan Paul, 2024
 """
@@ -11,20 +10,24 @@ from src.common.global_constants import JETBRAINS_MONO
 
 
 class Button:
-    def __init__(self, x, y, width, height, text, font: pygame.font.Font = False):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x_y: tuple, width_height: tuple, text, colour, colour_when_selected, font: pygame.font.Font = False):
+        self.rect = pygame.Rect(x_y, width_height)
         self.text = text
+        self.colour = colour
+        self.colour_when_selected = colour_when_selected
+        self.is_selected = False
 
-        if font:
+        if type(font) is pygame.font.Font:
             self.font = font
         else:
             self.font = pygame.font.SysFont(JETBRAINS_MONO, 60)  # Default font
 
     def draw(self, screen):
         pygame.draw.rect(screen, (255, 255, 255), self.rect)
-        text_surface = self.font.render(self.text, True, (0, 0, 0,))
+        text_surface = self.font.render(self.text, True, self.colour_when_selected if self.is_selected else self.colour)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 
-    def is_clicked(self, event):
-        return self.rect.collidepoint(event.pos)
+    def set_selected(self):
+        """Changes the colour of the button. To be called when the button is selected"""
+        self.is_selected = not self.is_selected  # Reverses the bool

@@ -6,25 +6,49 @@
 
 import pygame
 
+import src.common.battle.battle
+from src.player_info import player_save_data as player
+from src.common.global_constants import COLOUR_GREY
 from src.common.menu.button import Button
 
 
 class BattleMenu:
-    def __init__(self, player_inventory, player_team, player_creature, enemy_team, enemy_creature):
-        self.player_inventory = player_inventory
-        self.player_team = player_team
-        self.player_creature = player_creature
-        self.enemy_team = enemy_team
-        self.enemy_creature = enemy_creature
+    def __init__(self, battle_instance: src.common.battle.battle.Battle):
+        """
+            Creates, draws and manages input for buttons when in battle
 
-        self.BUTTON_HEIGHT = 200
-        self.BUTTON_WIDTH = 300
+            :param battle_instance: an instance of the Battle class
+        """
+        self.battle_instance = battle_instance
+
+        self.player_inventory = self.battle_instance.player_inventory
+        self.player_team = self.battle_instance.player_team
+        self.player_current_creature_index = self.battle_instance.player_current_creature_index
+
+        self.BUTTON_NOT_SELECTED_COLOUR = COLOUR_GREY
+        self.BUTTON_SELECTED_COLOUR = (164, 166, 166)
+        self.BUTTON_WIDTH_HEIGHT = (200, 300)
+
+        # The buttons are arranged in a grid, the numbers correspond to which button
+        # What the grid will look like:
+        # 1  2
+        # 3  4
+        self.BUTTON_1_POS = (300, 500)
+        self.BUTTON_2_POS = (600, 500)
+        self.BUTTON_3_POS = (300, 700)
+        self.BUTTON_4_POS = (600, 700)
 
         self.info_box = pygame.Rect(0, 600, 600, 200)
-        self.option_battle = Button(300, 500, self.BUTTON_WIDTH, self.BUTTON_HEIGHT, "Battle")
-        self.option_items = Button(600, 500, self.BUTTON_WIDTH, self.BUTTON_HEIGHT, "Items")
-        self.option_team = Button(300, 700, self.BUTTON_WIDTH, self.BUTTON_HEIGHT, "Change\nCreature")
-        self.option_run = Button(500, 700, self.BUTTON_WIDTH, self.BUTTON_HEIGHT, "Run")
+
+        # First screen
+        self.option_battle = Button(self.BUTTON_1_POS, self.BUTTON_WIDTH_HEIGHT, "Battle",
+                                    self.BUTTON_NOT_SELECTED_COLOUR, self.BUTTON_SELECTED_COLOUR)
+        self.option_items = Button(self.BUTTON_2_POS, self.BUTTON_WIDTH_HEIGHT, "Items",
+                                   self.BUTTON_NOT_SELECTED_COLOUR, self.BUTTON_SELECTED_COLOUR)
+        self.option_team = Button(self.BUTTON_3_POS, self.BUTTON_WIDTH_HEIGHT, "Change\nCreature",
+                                  self.BUTTON_NOT_SELECTED_COLOUR, self.BUTTON_SELECTED_COLOUR)
+        self.option_run = Button(self.BUTTON_4_POS, self.BUTTON_WIDTH_HEIGHT, "Run", self.BUTTON_NOT_SELECTED_COLOUR,
+                                 self.BUTTON_SELECTED_COLOUR)
 
         self.decision_menu_buttons = [self.option_battle, self.option_items, self.option_team, self.option_run]
 
@@ -35,7 +59,8 @@ class BattleMenu:
         self.current_menu_buttons = self.decision_menu_buttons
         self.current_menu_index = 0
 
-        for i in self.player_team[player_creature.moves]:
+        # Creates the lists containing buttons
+        for i in self.player_team[self.player_current_creature_index].moves:
             self.battle_buttons.append(i)
 
         for i in self.player_inventory:

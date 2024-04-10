@@ -5,15 +5,30 @@
 """
 import random
 
+from src.player_info import player_save_data as player
 from src.common.battle import move_creature_types
 from src.common.battle.moves import Move
 from src.common.creatures import Creature
 from src.common.menu.text_box import TextBox
 
 
+def get_first_conscious_creature():
+    """Looks for the first creature in the team that is conscious and returns its index"""
+    for i, creature in enumerate(player.team):
+        if creature.current_health is not 0:
+            return i
+
+
 class Battle:
-    def __init__(self, opponent):
-        self.starting_text = TextBox(f"{opponent.full_name} {opponent.wants_to_battle}")
+    def __init__(self, enemy):
+        self.starting_text = TextBox(f"{enemy.full_name} {enemy.wants_to_battle}")
+
+        self.player_inventory = player.inventory
+        self.player_team = player.team
+        self.player_current_creature_index = get_first_conscious_creature()
+
+        self.enemy_team = enemy.team
+        self.enemy_current_creature_index = 0
 
     def calculate_damage(self, attacker: Creature, victim: Creature, attack: Move):
         attacker_level = attacker.level
@@ -31,4 +46,5 @@ class Battle:
         spicy_number = random.randint(217, 255)
 
         # Shamelessly stolen from https://www.math.miami.edu/~jam/azure/compendium/battdam.htm
-        return ((((((((2 * attacker_level / 7) * attacker_attack_power * attack_dam) / victim_defense) / 50) + 2) * same_type_bonus) * type_modifier / 20) * spicy_number) / 255
+        return ((((((((
+                                  2 * attacker_level / 7) * attacker_attack_power * attack_dam) / victim_defense) / 50) + 2) * same_type_bonus) * type_modifier / 20) * spicy_number) / 255

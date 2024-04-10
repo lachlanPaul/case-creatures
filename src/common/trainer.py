@@ -59,11 +59,11 @@ class Trainer:
             case Directions.DOWN:
                 self.vision = Vision(self.pos_x, self.pos_y + 130, 130, 250)
 
-        self.team = []
         self.is_defeated = False  # This will be set to True when they are defeated, so they're only fight-able once
 
         self.full_name = character_type + name  # Lawyer Phoenix Wright wants to battle!
 
+        # Generates a random team if none is given
         if team is None:
             for _ in range(team_size):
                 self.team.append(random.choice(possible_creatures))
