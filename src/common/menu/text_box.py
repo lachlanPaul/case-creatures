@@ -4,8 +4,7 @@
 
 import pygame
 
-from src.common import global_constants
-from src.common.global_constants import JETBRAINS_MONO
+from src.common.global_constants import JETBRAINS_MONO, COLOUR_GREY, COLOUR_BLACK
 
 
 class TextBox:
@@ -39,13 +38,13 @@ class TextBox:
             else:
                 self.e_key_released = True
 
-            pygame.draw.rect(screen, global_constants.COLOUR_GREY, self.text_box)
+            pygame.draw.rect(screen, COLOUR_GREY, self.text_box)
             text_to_show = self.font.render(self.all_text_sections[self.current_section], True,
-                                            global_constants.COLOUR_BLACK)
+                                            COLOUR_BLACK)
 
             if self.name is not None:
-                name_to_show = self.font.render(self.name, True, global_constants.COLOUR_BLACK)
-                pygame.draw.rect(screen, global_constants.COLOUR_GREY, self.name_box)
+                name_to_show = self.font.render(self.name, True, COLOUR_BLACK)
+                pygame.draw.rect(screen, COLOUR_GREY, self.name_box)
                 screen.blit(name_to_show, (20, 365))
 
             screen.blit(text_to_show, (20, 450))

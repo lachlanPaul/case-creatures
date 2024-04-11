@@ -24,8 +24,8 @@ class Vision:
 
 
 class Trainer:
-    def __init__(self, name, character_type, possible_creatures, team_size, pos_x, pos_y,
-                 direction_facing: Directions, sprite_path, offset_list, team=None, wants_to_battle=None):
+    def __init__(self, name: str, character_type: str, possible_creatures: list, team_size: int, pos_x: int, pos_y: int,
+                 direction_facing: Directions, sprite_path: str, offset_list: list, team=None, wants_to_battle=None):
         """
         :param name: trainer's name
         :param character_type: the prefix of their name, eg; Karate Boy, Office Worker, etc
@@ -65,6 +65,7 @@ class Trainer:
 
         # Generates a random team if none is given
         if team is None:
+            self.team = []
             for _ in range(team_size):
                 self.team.append(random.choice(possible_creatures))
             while len(self.team) > 5:  # In case I goof

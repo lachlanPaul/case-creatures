@@ -9,26 +9,28 @@ from src.player_info import player_save_data as player
 from src.common.battle import move_creature_types
 from src.common.battle.moves import Move
 from src.common.creatures import Creature
+from src.common.menu.battle_menu import BattleMenu
 from src.common.menu.text_box import TextBox
 
 
 def get_first_conscious_creature():
     """Looks for the first creature in the team that is conscious and returns its index"""
     for i, creature in enumerate(player.team):
-        if creature.current_health is not 0:
+        if creature.current_health != 0:
             return i
 
 
 class Battle:
-    def __init__(self, enemy):
-        self.starting_text = TextBox(f"{enemy.full_name} {enemy.wants_to_battle}")
-
+    def __init__(self, screen, enemy):
         self.player_inventory = player.inventory
         self.player_team = player.team
         self.player_current_creature_index = get_first_conscious_creature()
 
-        self.enemy_team = enemy.team
+        # self.enemy_team = enemy.team
         self.enemy_current_creature_index = 0
+
+        self.menu = BattleMenu(self, screen)
+        self.menu.draw(screen)
 
     def calculate_damage(self, attacker: Creature, victim: Creature, attack: Move):
         attacker_level = attacker.level

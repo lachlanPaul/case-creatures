@@ -11,6 +11,8 @@ from src.common.global_constants import JETBRAINS_MONO
 
 class Button:
     def __init__(self, x_y: tuple, width_height: tuple, text, colour, colour_when_selected, font: pygame.font.Font = False):
+        pygame.font.init()
+
         self.rect = pygame.Rect(x_y, width_height)
         self.text = text
         self.colour = colour

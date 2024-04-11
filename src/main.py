@@ -11,6 +11,7 @@ import pygame
 
 import src.common.world.world_object
 from player import Player
+from src.common import creatures
 from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
 from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
@@ -69,7 +70,7 @@ class Main:
         self.funny = TextBox("GAHAHA! You my friend, are on the road to glory!!!!!!!!!!!!!!!!!!", "Zangief")
         self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 200, 100, 100, 500, self.SCREEN,
                                   self.items_to_offset, self.funny, self.keys)
-        self.troin = Trainer("d", "guy", "cock", 5, 900, 100, Directions.UP, "../assets/placeholder.jpg",
+        self.troin = Trainer("d", "guy", [creatures.chair], 1, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
         self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
 
@@ -96,7 +97,7 @@ class Main:
 
         for item in self.items_to_offset:
             match type(item):
-                case pygame.rect.Rect:
+                case pygame.Rect:
                     # NOTE: Re-enable this for debugging
                     # pygame.draw.rect(self.SCREEN, (255, 0, 0), item.move(self.offset_x, self.offset_y))
                     pass
@@ -223,6 +224,7 @@ class Main:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
 
+            print(self.in_bush)
             pygame.display.update()
 
 
