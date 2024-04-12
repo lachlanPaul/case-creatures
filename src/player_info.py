@@ -3,13 +3,14 @@
 
     Lachlan Paul, 2024
 """
+from src.common import creatures
 from src.common.creatures import Creature
 
 
 class PlayerInfo:
     def __init__(self):
         self.name = None
-        self.team = []
+        self.team = [creatures.chair]
         self.box = []
         self.inventory = []
 

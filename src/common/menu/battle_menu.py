@@ -85,11 +85,17 @@ class BattleMenu:
         self.battle_buttons = []
         position = 0
 
-        for i in self.player_team[self.player_current_creature_index].moves:
-            position += 1
-            move_name = i.name
-            self.create_grid_button(position, move_name)
-            self.battle_buttons.append(i)
+        while True:
+            try:
+                for i in self.player_team[self.player_current_creature_index].moves:
+                    position += 1
+                    move_name = i.name
+                    self.create_grid_button(position, move_name)
+                    self.battle_buttons.append(i)
+
+                break
+            except TypeError:
+                self.player_team[self.player_current_creature_index].randomise_moves()
 
     def open_menu(self):
         match self.decision_menu_buttons[self.current_menu_index]:

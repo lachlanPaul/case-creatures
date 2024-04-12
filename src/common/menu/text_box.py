@@ -26,7 +26,7 @@ class TextBox:
         # prevents it being registered too many times.
         self.e_key_released = True
 
-        if len(self.name) > 7:
+        if self.name is not None and len(self.name) > 7:
             raise ("A text box name is too long", ValueError)
 
     def interact(self, screen, keys):

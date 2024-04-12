@@ -19,6 +19,8 @@ def get_first_conscious_creature():
         if creature.current_health != 0:
             return i
 
+    return 0
+
 
 class Battle:
     def __init__(self, screen, enemy):
@@ -26,7 +28,8 @@ class Battle:
         self.player_team = player.team
         self.player_current_creature_index = get_first_conscious_creature()
 
-        # self.enemy_team = enemy.team
+        self.enemy = enemy
+        self.enemy_team = enemy.team
         self.enemy_current_creature_index = 0
 
         self.menu = BattleMenu(self, screen)

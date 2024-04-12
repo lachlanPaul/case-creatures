@@ -12,6 +12,7 @@ import pygame
 import src.common.world.world_object
 from player import Player
 from src.common import creatures
+from src.common.battle.battle import Battle
 from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
 from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
@@ -40,7 +41,7 @@ class Main:
         pygame.display.set_caption("Case Creatures")
 
         self.player = Player()
-        self.PLAYER_SPEED = 3
+        self.PLAYER_SPEED = 9
         self.clock = pygame.time.Clock()
         self.keys = pygame.key.get_pressed()
         self.seconds_counted = 0
@@ -51,6 +52,7 @@ class Main:
         self.current_text_box = None  # This will be set to the most recent text box read for reloading when reading.
         self.current_menu = None
         self.current_interact_radius = None
+        self.current_battle = None
 
         self.offset_x = 0
         self.offset_y = 0
@@ -72,7 +74,7 @@ class Main:
                                   self.items_to_offset, self.funny, self.keys)
         self.troin = Trainer("d", "guy", [creatures.chair], 1, 900, 100, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
-        self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
+        # self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
 
     def movement_keys(self):
         """Manages movement"""
@@ -89,7 +91,7 @@ class Main:
             self.offset_y -= self.PLAYER_SPEED
             self.movement_key_pressed = True
 
-    def update_everything(self):
+    def update_world(self):
         """Updates the position of everything, including the player."""
         current_win_size = pygame.display.get_surface().get_size()
 
@@ -112,8 +114,11 @@ class Main:
 
         # TODO: When making configuration files and such, set this to be ran if enabled in settings.
         fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
+        coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
         fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
+        coords_text = coords_font.render((str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True, COLOUR_BLACK)
         self.SCREEN.blit(fps_text, (0, 0))
+        self.SCREEN.blit(coords_text, (0, 80))
 
     def player_has_collided(self):
         """
@@ -142,11 +147,16 @@ class Main:
                         return True
                     elif self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
                         print("Saw you!")
+                        if not item.is_defeated:
+                            self.current_state = States.IN_BATTLE
+                            bottle = Battle(self.SCREEN, item)
+                            self.current_battle = bottle
                         return False
                 case src.common.world.bush.Bush:
                     if self.player.hitbox.colliderect(
                             item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
                         self.in_bush = True
+                        print(True)
                         return False
                 case _:
                     continue
@@ -190,23 +200,25 @@ class Main:
             if self.current_state == States.IN_WORLD:
                 self.movement_keys()
 
-            # TODO: This will be changed to check for a few things
-            #  If the collided object is a trainer's vision, or
-            #  If the collided object is a door or area load trigger
-            if self.player_has_collided():
-                self.offset_x = self.old_offset_x
-                self.offset_y = self.old_offset_y
+                # TODO: This will be changed to check for a few things
+                #  If the collided object is a trainer's vision, or
+                #  If the collided object is a door or area load trigger
+                if self.player_has_collided():
+                    self.offset_x = self.old_offset_x
+                    self.offset_y = self.old_offset_y
 
-            # TODO: Abnormal walking pattern, experiment.
-            if self.movement_key_pressed and pygame.time.get_ticks() % 6 == 0:
-                self.player.sprite = pygame.transform.flip(self.player.sprite, True, False)
+                # TODO: Abnormal walking pattern, experiment.
+                if self.movement_key_pressed and pygame.time.get_ticks() % 6 == 0:
+                    self.player.sprite = pygame.transform.flip(self.player.sprite, True, False)
 
-            # Checks for random battle when in bush
-            if self.movement_key_pressed and self.in_bush:
-                if chance_for_battle(1):
-                    print(True)
+                # Checks for random battle when in bush
+                if self.movement_key_pressed and self.in_bush:
+                    if chance_for_battle(1):
+                        print(True)
 
-            self.update_everything()
+            # Updates the world only if it's being shown
+            if self.current_state is not (States.IN_WORLD, States.IN_MENU, States.IN_TITLE_SCREEN):
+                self.update_world()
 
             # Put anything that needs to be drawn over the top of the world here.
             if self.current_state == States.IN_TEXT:
@@ -224,7 +236,10 @@ class Main:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
 
-            print(self.in_bush)
+            elif self.current_state == States.IN_BATTLE:
+                self.SCREEN.fill((255, 255, 255))
+                self.current_battle.menu.draw(self.SCREEN)
+
             pygame.display.update()
 
 
