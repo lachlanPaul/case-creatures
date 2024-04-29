@@ -13,7 +13,7 @@ import src.common.world.world_object
 from player import Player
 from src.common import creatures
 from src.common.battle.battle import Battle
-from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
+from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK, COLOUR_WHITE
 from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
@@ -93,9 +93,11 @@ class Main:
 
     def update_world(self):
         """Updates the position of everything, including the player."""
-        current_win_size = pygame.display.get_surface().get_size()
+        self.SCREEN.fill(COLOUR_WHITE)
 
-        self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
+        current_win_size = pygame.display.get_surface().get_size()
+        if self.current_state in [States.IN_WORLD, States.IN_TEXT]:
+            self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
 
         for item in self.items_to_offset:
             match type(item):
@@ -110,15 +112,16 @@ class Main:
                 case _:
                     # NOTE: Most things should have pretty much the same draw method.
                     #   However, the match case should make it easy to accommodate for a unique draw method.
-                    item.draw(self.SCREEN, self.offset_x, self.offset_y)
+                    if self.current_state not in [States.IN_BATTLE, States.IN_MENU]:
+                        item.draw(self.SCREEN, self.offset_x, self.offset_y)
 
-        # TODO: When making configuration files and such, set this to be ran if enabled in settings.
-        fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
-        coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
-        fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
-        coords_text = coords_font.render((str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True, COLOUR_BLACK)
-        self.SCREEN.blit(fps_text, (0, 0))
-        self.SCREEN.blit(coords_text, (0, 80))
+                        # TODO: When making configuration files and such, set this to be ran if enabled in settings.
+                        fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
+                        coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
+                        fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
+                        coords_text = coords_font.render((str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True, COLOUR_BLACK)
+                        self.SCREEN.blit(fps_text, (0, 0))
+                        self.SCREEN.blit(coords_text, (0, 80))
 
     def player_has_collided(self):
         """
@@ -151,6 +154,7 @@ class Main:
                             self.current_state = States.IN_BATTLE
                             bottle = Battle(self.SCREEN, item)
                             self.current_battle = bottle
+                            print("he")
                         return False
                 case src.common.world.bush.Bush:
                     if self.player.hitbox.colliderect(
@@ -171,7 +175,10 @@ class Main:
             self.keys = pygame.key.get_pressed()
 
             self.clock.tick(60)  # Frame rate
-            self.SCREEN.fill((255, 255, 255))
+
+            # Updates the world only if it's being shown
+            if self.current_state is not (States.IN_WORLD, States.IN_MENU, States.IN_TITLE_SCREEN):
+                self.update_world()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -216,10 +223,6 @@ class Main:
                     if chance_for_battle(1):
                         print(True)
 
-            # Updates the world only if it's being shown
-            if self.current_state is not (States.IN_WORLD, States.IN_MENU, States.IN_TITLE_SCREEN):
-                self.update_world()
-
             # Put anything that needs to be drawn over the top of the world here.
             if self.current_state == States.IN_TEXT:
                 if self.current_text_box.interact(self.SCREEN, self.keys):
@@ -236,8 +239,7 @@ class Main:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
 
-            elif self.current_state == States.IN_BATTLE:
-                self.SCREEN.fill((255, 255, 255))
+            if self.current_state == States.IN_BATTLE:
                 self.current_battle.menu.draw(self.SCREEN)
 
             pygame.display.update()

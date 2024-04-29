@@ -33,7 +33,6 @@ class Battle:
         self.enemy_current_creature_index = 0
 
         self.menu = BattleMenu(self, screen)
-        self.menu.draw(screen)
 
     def calculate_damage(self, attacker: Creature, victim: Creature, attack: Move):
         attacker_level = attacker.level
