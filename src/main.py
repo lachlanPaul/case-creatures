@@ -14,6 +14,7 @@ from player import Player
 from src.common import creatures
 from src.common.battle.battle import Battle
 from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK, COLOUR_WHITE
+from src.common.menu.button import Button
 from src.common.menu.pause_menu import pause_menu
 from src.common.menu.text_box import TextBox
 from src.common.trainer import Trainer, Directions
@@ -41,8 +42,10 @@ class Main:
         pygame.display.set_caption("Case Creatures")
 
         self.player = Player()
-        self.PLAYER_SPEED = 9
+        self.PLAYER_SPEED = 10
         self.clock = pygame.time.Clock()
+        self.FRAMES_PER_SECOND = 30
+
         self.keys = pygame.key.get_pressed()
         self.seconds_counted = 0
 
@@ -72,8 +75,10 @@ class Main:
         self.funny = TextBox("GAHAHA! You my friend, are on the road to glory!!!!!!!!!!!!!!!!!!", "Zangief")
         self.thingo = WorldObject("haus", "../assets/placeholder.jpg", 200, 100, 100, 500, self.SCREEN,
                                   self.items_to_offset, self.funny, self.keys)
-        self.troin = Trainer("d", "guy", [creatures.chair], 1, 900, 100, Directions.UP, "../assets/placeholder.jpg",
+        self.troin = Trainer("d", "guy", [creatures.chair], 1, 600, 500, Directions.UP, "../assets/placeholder.jpg",
                              self.items_to_offset)
+
+        # self.butt = Button((20, 20), (20, 20), "a", COLOUR_BLACK, COLOUR_BLACK)
         # self.bush = Bush(200, 200, 200, 26, self.SCREEN, self.items_to_offset)
 
     def movement_keys(self):
@@ -122,6 +127,8 @@ class Main:
                         coords_text = coords_font.render((str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True, COLOUR_BLACK)
                         self.SCREEN.blit(fps_text, (0, 0))
                         self.SCREEN.blit(coords_text, (0, 80))
+                    elif self.current_state is States.IN_BATTLE:
+                        self.current_battle.menu.draw(self.SCREEN)
 
     def player_has_collided(self):
         """
@@ -174,7 +181,7 @@ class Main:
             self.old_offset_y = self.offset_y
             self.keys = pygame.key.get_pressed()
 
-            self.clock.tick(60)  # Frame rate
+            self.clock.tick(self.FRAMES_PER_SECOND)  # Frame rate
 
             # Updates the world only if it's being shown
             if self.current_state is not (States.IN_WORLD, States.IN_MENU, States.IN_TITLE_SCREEN):
@@ -238,9 +245,6 @@ class Main:
                 if self.seconds_counted == 60:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
-
-            if self.current_state == States.IN_BATTLE:
-                self.current_battle.menu.draw(self.SCREEN)
 
             pygame.display.update()
 

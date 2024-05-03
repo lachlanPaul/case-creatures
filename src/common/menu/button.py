@@ -6,7 +6,7 @@
 
 import pygame
 
-from src.common.global_constants import JETBRAINS_MONO
+from src.common.global_constants import JETBRAINS_MONO, COLOUR_BLACK
 
 
 class Button:
@@ -25,8 +25,8 @@ class Button:
             self.font = pygame.font.SysFont(JETBRAINS_MONO, 60)  # Default font
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (255, 255, 255), self.rect)
-        text_surface = self.font.render(self.text, True, self.colour_when_selected if self.is_selected else self.colour)
+        pygame.draw.rect(screen, self.colour_when_selected if self.is_selected else self.colour, self.rect)
+        text_surface = self.font.render(self.text, True, COLOUR_BLACK)
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
 

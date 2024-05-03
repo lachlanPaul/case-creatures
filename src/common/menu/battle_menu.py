@@ -7,7 +7,7 @@
 import pygame
 
 from src.common.battle import move_creature_types
-from src.common.global_constants import COLOUR_GREY
+from src.common.global_constants import COLOUR_GREY, COLOUR_BLACK
 from src.common.menu.button import Button
 from src.common.menu.text_box import TextBox
 
@@ -31,16 +31,16 @@ class BattleMenu:
 
         self.BUTTON_NOT_SELECTED_COLOUR = COLOUR_GREY
         self.BUTTON_SELECTED_COLOUR = (164, 166, 166)
-        self.BUTTON_WIDTH_HEIGHT = (200, 300)
+        self.BUTTON_WIDTH_HEIGHT = (200, 100)
 
         # The buttons are arranged in a grid, the numbers correspond to which button
         # What the grid will look like:
         # 0  1
         # 2  3
-        self.BUTTON_0_POS = (300, 500)
-        self.BUTTON_1_POS = (600, 500)
-        self.BUTTON_2_POS = (300, 700)
-        self.BUTTON_3_POS = (600, 700)
+        self.BUTTON_0_POS = (100, 350)  # Top left corner
+        self.BUTTON_1_POS = (500, 350)  # Top right corner
+        self.BUTTON_2_POS = (100, 450)  # Bottom left corner
+        self.BUTTON_3_POS = (500, 450)  # Bottom right corner
 
         self.info_box = pygame.Rect(0, 600, 600, 200)
 
@@ -132,6 +132,7 @@ class BattleMenu:
                         self.current_menu_index -= 1
                     else:
                         self.current_menu_index += 1
+            self.current_menu_buttons[self.current_menu_index].set_selected()
 
     def show_text_message(self, keys):
         if self.current_text_box:
