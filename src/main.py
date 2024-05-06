@@ -124,11 +124,13 @@ class Main:
                         fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
                         coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
                         fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
-                        coords_text = coords_font.render((str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True, COLOUR_BLACK)
+                        coords_text = coords_font.render(
+                            (str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True,
+                            COLOUR_BLACK)
                         self.SCREEN.blit(fps_text, (0, 0))
                         self.SCREEN.blit(coords_text, (0, 80))
-                    elif self.current_state is States.IN_BATTLE:
-                        self.current_battle.menu.draw(self.SCREEN)
+                    # elif self.current_state is States.IN_BATTLE:
+                    #     self.current_battle.menu.draw(self.SCREEN)
 
     def player_has_collided(self):
         """
@@ -172,6 +174,10 @@ class Main:
                 case _:
                     continue
         return False
+
+    def when_in_battle(self):
+        self.current_battle.menu.draw(self.SCREEN)
+        self.current_battle.menu.navigate_menu(self.keys)
 
     def main(self):
         while self.game_running:
@@ -222,7 +228,7 @@ class Main:
                     self.offset_y = self.old_offset_y
 
                 # TODO: Abnormal walking pattern, experiment.
-                if self.movement_key_pressed and pygame.time.get_ticks() % 6 == 0:
+                if self.movement_key_pressed and pygame.time.get_ticks() % 3 == 0:
                     self.player.sprite = pygame.transform.flip(self.player.sprite, True, False)
 
                 # Checks for random battle when in bush
@@ -245,6 +251,9 @@ class Main:
                 if self.seconds_counted == 60:
                     self.seconds_counted = 0
                     player_save_data.add_second_to_playtime()
+
+            if self.current_state is States.IN_BATTLE:
+                self.when_in_battle()
 
             pygame.display.update()
 

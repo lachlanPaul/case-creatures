@@ -29,8 +29,14 @@ class BattleMenu:
         self.player_team = self.battle_instance.player_team
         self.player_current_creature_index = self.battle_instance.player_current_creature_index
 
+        self.w_key_released = True
+        self.a_key_released = True
+        self.s_key_released = True
+        self.d_key_released = True
+        self.e_key_pressed = True
+
         self.BUTTON_NOT_SELECTED_COLOUR = COLOUR_GREY
-        self.BUTTON_SELECTED_COLOUR = (164, 166, 166)
+        self.BUTTON_SELECTED_COLOUR = (255, 255, 153)
         self.BUTTON_WIDTH_HEIGHT = (200, 100)
 
         # The buttons are arranged in a grid, the numbers correspond to which button
@@ -92,6 +98,7 @@ class BattleMenu:
                     move_name = i.name
                     self.create_grid_button(position, move_name)
                     self.battle_buttons.append(i)
+                    print("alfhasf")
 
                 break
             except TypeError:
@@ -101,6 +108,7 @@ class BattleMenu:
         match self.decision_menu_buttons[self.current_menu_index]:
             case self.option_battle:
                 self.current_menu_buttons = self.battle_buttons
+                self.create_new_moves_menu()
             case self.option_items:
                 self.current_menu_buttons = self.inventory_buttons
                 self.current_menu_index = 0
@@ -109,30 +117,65 @@ class BattleMenu:
                 self.current_menu_index = 0
 
     def navigate_menu(self, key_pressed):
-        # TODO: Make alternate path for when in inventory
         if self.current_menu_buttons is not self.inventory_buttons:
-            match key_pressed:
-                case pygame.K_w:
-                    if self.current_menu_index is (0 or 1):
+            key_is_pressed = False
+
+            if key_pressed[pygame.K_w]:
+                if self.w_key_released:
+                    if self.current_menu_index in (0, 1):
                         self.current_menu_index += 2
                     else:
                         self.current_menu_index -= 2
-                case pygame.K_a:
-                    if self.current_menu_index is (0 or 2):
+                    key_is_pressed = True
+                    self.w_key_released = False
+            else:
+                self.w_key_released = True
+
+            if key_pressed[pygame.K_a]:
+                if self.a_key_released:
+                    if self.current_menu_index in (0, 2):
                         self.current_menu_index += 1
                     else:
                         self.current_menu_index -= 1
-                case pygame.K_s:
-                    if self.current_menu_index is (2 or 3):
+                    key_is_pressed = True
+                    self.a_key_released = False
+            else:
+                self.a_key_released = True
+
+            if key_pressed[pygame.K_s]:
+                if self.s_key_released:
+                    if self.current_menu_index in (2, 3):
                         self.current_menu_index -= 2
                     else:
                         self.current_menu_index += 2
-                case pygame.K_d:
-                    if self.current_menu_index is (1 or 3):
+                    key_is_pressed = True
+                    self.s_key_released = False
+            else:
+                self.s_key_released = True
+
+            if key_pressed[pygame.K_d]:
+                if self.d_key_released:
+                    if self.current_menu_index in (1, 3):
                         self.current_menu_index -= 1
                     else:
                         self.current_menu_index += 1
-            self.current_menu_buttons[self.current_menu_index].set_selected()
+                    key_is_pressed = True
+                    self.d_key_released = False
+            else:
+                self.d_key_released = True
+
+            if key_pressed[pygame.K_e] and self.e_key_pressed:
+                self.e_key_pressed = False
+                self.open_menu()
+            elif not key_pressed[pygame.K_e]:
+                self.e_key_pressed = True
+
+            if key_is_pressed:
+                for index, i in enumerate(self.current_menu_buttons):
+                    if index == self.current_menu_index:
+                        self.current_menu_buttons[index].is_selected = True
+                    else:
+                        self.current_menu_buttons[index].is_selected = False
 
     def show_text_message(self, keys):
         if self.current_text_box:
