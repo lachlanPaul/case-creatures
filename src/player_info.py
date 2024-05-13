@@ -9,8 +9,11 @@ from src.common.creatures import Creature
 
 class PlayerInfo:
     def __init__(self):
+        self.cret = creatures.chair
+        self.cret.create_creature()
+
         self.name = None
-        self.team = [creatures.chair]
+        self.team = [self.cret]
         self.box = []
         self.inventory = []
 

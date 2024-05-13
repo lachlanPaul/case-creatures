@@ -45,6 +45,14 @@ class Creature:
         self.name = name
         self.description = description
         self.learnable_moves = learnable_moves
+
+        # Because of the way learnable moves are passed (a list of lists), we use this to combine them into one big list
+        if type(self.learnable_moves[0]) == list:
+            new_list = []
+            for item in self.learnable_moves[0]:
+                new_list.append(item)
+            self.learnable_moves = new_list
+
         self.moves = []
         self.in_pedia = in_pedia
 
@@ -91,15 +99,15 @@ class Creature:
 
     def create_creature(self):
         """Randomises all that needs to be randomised in the creature upon encounter"""
-        self.randomise_moves()
-        self.create_stats()
-
         # Random number for variation in stats
         rand_iv = random.randint(0, 31)
         self.HEALTH_IV = rand_iv
         self.ATK_IV = rand_iv
         self.DEF_IV = rand_iv
         self.SPD_IV = rand_iv
+
+        self.randomise_moves()
+        self.create_stats()
 
     def randomise_moves(self):
         """
