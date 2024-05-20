@@ -22,7 +22,8 @@ class Creature:
                  base_spd,
                  ev,
                  sprite=None,
-                 in_pedia=True
+                 in_pedia=True,
+                 cannot_be_poisoned = False,
                  ):
         """
         :param name: name of the creature to be shown in various places
@@ -96,6 +97,16 @@ class Creature:
         else:
             self.sprite = pygame.image.load(sprite)
         self.sprite = pygame.transform.scale(self.sprite, (100, 100))
+
+        self.cannot_be_poisoned = cannot_be_poisoned
+
+        self.is_poisoned = False
+        self.is_sleeping = False
+        self.is_paralysed = False
+
+        self.turns_since_poisoned = 0
+        self.turns_since_sleeping = 0
+        self.turns_since_paralysed = 0
 
     def create_creature(self):
         """Randomises all that needs to be randomised in the creature upon encounter"""

@@ -18,7 +18,10 @@ class Move:
                  required_level: int,
                  base_dam: int,
                  chance_of_hit: int,
-                 hits_first: bool
+                 hits_first: bool,
+                 chance_of_poison: int = 0,
+                 chance_of_paralysis: int = 0,
+                 chance_of_sleep: int = 0
                  ):
         """
 
@@ -53,6 +56,10 @@ class Move:
         self.base_dam = base_dam
         self.chance_of_hit = chance_of_hit
         self.hits_first = hits_first
+
+        self.chance_of_poison = chance_of_poison
+        self.chance_of_paralysis = chance_of_paralysis
+        self.chance_of_sleep = chance_of_sleep
 
         self.instances.append(self)  # This is for automating lists of moves to be made
 

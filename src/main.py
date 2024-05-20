@@ -101,8 +101,7 @@ class Main:
         self.SCREEN.fill(COLOUR_WHITE)
 
         current_win_size = pygame.display.get_surface().get_size()
-        if self.current_state in [States.IN_WORLD, States.IN_TEXT]:
-            self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
+        # if self.current_state in [States.IN_WORLD, States.IN_TEXT]:
 
         for item in self.items_to_offset:
             match type(item):
@@ -119,6 +118,7 @@ class Main:
                     #   However, the match case should make it easy to accommodate for a unique draw method.
                     if self.current_state not in [States.IN_BATTLE, States.IN_MENU]:
                         item.draw(self.SCREEN, self.offset_x, self.offset_y)
+                        self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
 
                         # TODO: When making configuration files and such, set this to be ran if enabled in settings.
                         fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
@@ -129,8 +129,6 @@ class Main:
                             COLOUR_BLACK)
                         self.SCREEN.blit(fps_text, (0, 0))
                         self.SCREEN.blit(coords_text, (0, 80))
-                    # elif self.current_state is States.IN_BATTLE:
-                    #     self.current_battle.menu.draw(self.SCREEN)
 
     def player_has_collided(self):
         """
@@ -245,6 +243,7 @@ class Main:
                 pause_menu.draw(self.SCREEN)
 
             # Counts towards the overall playtime counter
+            # TODO: Fix. It broke since the fps changed
             if self.current_state is not States.IN_TITLE_SCREEN:
                 self.seconds_counted += 1
 
