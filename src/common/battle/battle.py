@@ -40,6 +40,7 @@ class Battle:
         self.menu = BattleMenu(self, screen)
 
         self.set_current_creatures()
+        self.turn()
 
     """
         Changes the current creature variables for easier use
@@ -61,6 +62,8 @@ class Battle:
 
         if random.randint(0, 100) < attack.chance_of_sleep:
             victim.is_sleeping = True
+
+        self.menu.announce_attack_effectiveness(victim, attack)
 
 
     def calculate_damage(self, attacker: Creature, victim: Creature, attack: Move):
@@ -87,21 +90,38 @@ class Battle:
     """
     def turn(self):
         # TODO: Decide enemy action
+        self.enemy_action = random.choice(self.enemy_current_creature.moves)
 
         priority = {
-            self.player_action: self.player_current_creature.speed,
-            self.enemy_action: self.enemy_current_creature.speed
+            self.player_action: self.player_current_creature.speed, #tackle:40
+            self.enemy_action: self.enemy_current_creature.speed #run:30
         }
 
-        for i in priority.copy():
-            if type(i) != Move or (type(i) == Move and i.hits_first):
+        print(priority)
+
+        for i in priority.copy().values():
+            if isinstance(i, Move) or (isinstance(i, Move) and i.hits_first):
                 priority[i] = 99999
+
+
+        values = list(priority.values())
+        print(values)
+        print("dad", priority)
+        if values[0] == values[1]:
+            # Return to original state if they both are meant to be first.
+            # This'll also mean that if they're both doing a non move, it'll be sorted by the current creature speed.
+            # I don't care so we'll let it happen
+            priority = {
+                self.player_action: self.player_current_creature.speed,
+                self.enemy_action: self.enemy_current_creature.speed
+            }
 
         # Sorts the dict by the speed values
         priority = dict(sorted(priority.items(), key=lambda item: item[1], reverse=True))
+        print(priority)
 
         for j in priority.keys():
-            if type(j) == Move:
+            if isinstance(j, Move):
                 attacker = self.enemy_current_creature if j is self.enemy_action else self.player_current_creature
                 victim = self.player_current_creature if attacker is self.enemy_action else self.enemy_current_creature
                 self.use_attack(attacker, victim, j)

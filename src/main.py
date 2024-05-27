@@ -156,18 +156,15 @@ class Main:
                     if self.player.hitbox.colliderect(item.hitbox.move(self.offset_x, self.offset_y)):
                         return True
                     elif self.player.hitbox.colliderect(item.vision.hitbox.move(self.offset_x, self.offset_y)):
-                        print("Saw you!")
                         if not item.is_defeated:
                             self.current_state = States.IN_BATTLE
                             bottle = Battle(self.SCREEN, item)
                             self.current_battle = bottle
-                            print("he")
                         return False
                 case src.common.world.bush.Bush:
                     if self.player.hitbox.colliderect(
                             item.hitbox.move((item.pos_x + self.offset_x, item.pos_y + self.offset_y))):
                         self.in_bush = True
-                        print(True)
                         return False
                 case _:
                     continue
@@ -232,6 +229,7 @@ class Main:
                 # Checks for random battle when in bush
                 if self.movement_key_pressed and self.in_bush:
                     if chance_for_battle(1):
+                        # TODO: Battle
                         print(True)
 
             # Put anything that needs to be drawn over the top of the world here.

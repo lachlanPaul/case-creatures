@@ -102,8 +102,6 @@ class BattleMenu:
                 self.player_team[self.player_current_creature_index].randomise_moves()
 
     def open_menu(self):
-        print(self.battle_buttons)
-        print(self.current_menu_buttons)
         # Selected button
         sel_but = self.current_menu_buttons[self.current_menu_index]
         match self.current_menu_buttons[self.current_menu_index]:
@@ -118,7 +116,9 @@ class BattleMenu:
                 self.current_menu_index = 0
             case _:
                 if self.current_menu_buttons[self.current_menu_index] in self.battle_buttons:
-                    self.battle_instance.use_attack(self.player_team[self.player_current_creature_index], sel_but, self.battle_instance.enemy_team[self.battle_instance.enemy_current_index])
+                    self.battle_instance.player_action = self.battle_instance.player_current_creature.moves[self.current_menu_index]
+
+                self.battle_instance.turn()
 
     def navigate_menu(self, key_pressed):
         if self.current_menu_buttons is not self.inventory_buttons:
