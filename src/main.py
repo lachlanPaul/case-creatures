@@ -120,15 +120,15 @@ class Main:
                         item.draw(self.SCREEN, self.offset_x, self.offset_y)
                         self.player.draw(self.SCREEN, current_win_size[0], current_win_size[1])
 
-                        # TODO: When making configuration files and such, set this to be ran if enabled in settings.
-                        fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
-                        coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
-                        fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
-                        coords_text = coords_font.render(
-                            (str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True,
-                            COLOUR_BLACK)
-                        self.SCREEN.blit(fps_text, (0, 0))
-                        self.SCREEN.blit(coords_text, (0, 80))
+        # TODO: When making configuration files and such, set this to be ran if enabled in settings.
+        fps_font = pygame.font.Font(JETBRAINS_MONO, 60)
+        coords_font = pygame.font.Font(JETBRAINS_MONO, 30)
+        fps_text = fps_font.render(str(floor(self.clock.get_fps())), True, COLOUR_BLACK)
+        coords_text = coords_font.render(
+            (str(f"{self.player.x - self.offset_x}, {self.player.y - self.offset_y}")), True,
+            COLOUR_BLACK)
+        self.SCREEN.blit(fps_text, (0, 0))
+        self.SCREEN.blit(coords_text, (0, 80))
 
     def player_has_collided(self):
         """

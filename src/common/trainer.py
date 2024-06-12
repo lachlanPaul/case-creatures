@@ -45,19 +45,22 @@ class Trainer:
         self.pos_x = pos_x
         self.pos_y = pos_y
 
+        LONG_WAYS_VISION = 250
+        SHORT_WAYS_VISION = 130
+
         self.sprite = pygame.image.load(sprite_path)
         self.sprite = pygame.transform.scale(self.sprite, (130, 130))
         self.hitbox = pygame.Rect(self.pos_x - 100, self.pos_y - 100, 130, 130)
 
         match direction_facing:
             case Directions.UP:
-                self.vision = Vision(self.pos_x, self.pos_y - 250, 130, 250)
+                self.vision = Vision(self.pos_x, self.pos_y - LONG_WAYS_VISION, SHORT_WAYS_VISION, LONG_WAYS_VISION)
             case Directions.LEFT:
-                self.vision = Vision(self.pos_x - 250, self.pos_y, 250, 130)
+                self.vision = Vision(self.pos_x - LONG_WAYS_VISION, self.pos_y, LONG_WAYS_VISION, SHORT_WAYS_VISION)
             case Directions.RIGHT:
-                self.vision = Vision(self.pos_x + 130, self.pos_y, 250, 130)
+                self.vision = Vision(self.pos_x + SHORT_WAYS_VISION, self.pos_y, LONG_WAYS_VISION, SHORT_WAYS_VISION)
             case Directions.DOWN:
-                self.vision = Vision(self.pos_x, self.pos_y + 130, 130, 250)
+                self.vision = Vision(self.pos_x, self.pos_y + SHORT_WAYS_VISION, SHORT_WAYS_VISION, LONG_WAYS_VISION)
 
         self.is_defeated = False  # This will be set to True when they are defeated, so they're only fight-able once
 
